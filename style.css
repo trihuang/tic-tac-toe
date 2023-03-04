@@ -4,6 +4,7 @@
     --border: #40513B;
     --font: #183A1D;
     --button: #BEF0CB;
+    --board: #1F8A70;
 }
 
 body {
@@ -131,4 +132,28 @@ input[type=radio] {
     position: absolute;
     top: 0;
     left: -9999px;
-  }
+}
+
+.gameboard {
+    height: 600px;
+    width: 500px;
+    background-color: var(--board);
+    border: 10px solid var(--board);
+    border-radius: 15px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    row-gap: 15px;
+}
+
+.cell {
+    background-color: white;
+    opacity: 0.75;
+    height: 150px;
+    width: 150px;
+    border-radius: 15px;
+}
+
+.cell > img {
+    height: 150px;
+}
