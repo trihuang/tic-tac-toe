@@ -1,0 +1,134 @@
+:root {
+    --background: #C7E8CA;
+    --form: #9DC08B;
+    --border: #40513B;
+    --font: #183A1D;
+    --button: #BEF0CB;
+}
+
+body {
+    background-color: var(--background);
+    font-family: 'Permanent Marker', sans-serif;
+    text-align: center;
+}
+
+.container {
+    height: 60vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    color: var(--font);
+    font-size: 4rem;
+    margin: 40px auto;
+}
+
+.welcome,
+.pvp,
+.pvc {
+    background-color: var(--form);
+    border: 3px solid var(--border);
+    border-radius: 25px;
+    height: 400px;
+    width: 400px;
+    box-shadow: 5px 10px 18px #888888;
+}
+
+.welcome {
+    position: fixed;
+    display: none;
+}
+
+.pvp {
+    height: 550px;
+    position: fixed;
+    display: none;
+}
+
+.pvc {
+    position: fixed;
+    display: none;
+}
+
+.text-container {
+    margin-top: 30px;
+}
+
+p {
+    font-size: 2rem;
+    margin: 10px 0;
+}
+
+.button-container {
+    width: 300px;
+    height: 200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+button {
+    font-family: sans-serif;
+    font-size: 1rem;
+    padding: 15px;
+    width: 300px;
+    border-radius: 10px;
+    margin-top: 20px;
+    background-color: var(--font);
+    opacity: 0.5;
+    color: white;
+}
+
+button:hover {
+    opacity: 1;
+}
+
+label:first-of-type {
+    margin-top: 10px;
+}
+
+label:first-of-type,
+label:nth-of-type(4) {
+    display: block;
+    text-align: left;
+    margin-left: 50px;
+}
+
+form > input:first-of-type,
+form > input:nth-of-type(4) {
+    display: block;
+    height: 1.5rem;
+    width: 300px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    color: rgb(73, 71, 71);
+    margin: 0 auto;
+}
+
+label {
+    font-size: 2rem;
+}
+
+label > img {
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.selected {
+    background-color: var(--background);
+    border-radius: 10px;
+    opacity: 0.75;
+}
+
+input[type=radio] {
+    position: absolute;
+    top: 0;
+    left: -9999px;
+  }

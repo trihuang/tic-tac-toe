@@ -5,9 +5,57 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
-    <title>Tic-Tac-Toe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+    <title>Tic Tac Toe</title>
 </head>
 <body>
+    <h1>Tic Tac Toe</h1>
+    <div class="container">
+        <div class="welcome">
+            <div class="text-container">
+                <p>Welcome!</p>
+                <p>Let's play Tic Tac Toe!</p>
+            </div>
+            <div class="button-container">
+                <button>Play against a human</button>
+                <button>Play against the computer</button>
+            </div>
+        </div>
+        <div class="pvp">
+            <form action="#" method="POST">
+                <label for="player1">Player 1</label>
+                <input type="text" name="player1" id="player1" placeholder="Name of Player 1" required>
+                <p>Choose your marker:</p>
+                <input type="radio" id="circle" name="p1-marker" value="circle" checked>
+                <label for="circle"><img src="./img/icon-circle.svg" alt="circle-marker"></label>
+                <input type="radio" id="x" name="p1-marker" value="x">
+                <label for="x"><img src="./img/icon-x.svg" alt="x-marker"></label>
+                <br>
+                <label for="player2">Player 2</label>
+                <input type="text" name="player2" id="player2" placeholder="Name of Player 2" required>
+                <p>Choose your marker:</p>
+                <input type="radio" id="circle" name="p2-marker" value="circle">
+                <label for="circle"><img src="./img/icon-circle.svg" alt="circle-marker"></label>
+                <input type="radio" id="x" name="p2-marker" value="x" checked>
+                <label for="x"><img src="./img/icon-x.svg" alt="x-marker"></label>
+                <button>Start</button>
+            </form>
+        </div>
+        <div class="pvc">
+            <form action="#" method="POST">
+                <label for="player1">Player</label>
+                <input type="text" name="player1" id="player1" placeholder="Name" required>
+                <p>Choose your marker:</p>
+                <input type="radio" id="circle" name="p1-marker" value="circle" checked>
+                <label for="circle"><img src="./img/icon-circle.svg" alt="circle-marker"></label>
+                <input type="radio" id="x" name="p1-marker" value="x">
+                <label for="x"><img src="./img/icon-x.svg" alt="x-marker"></label>
+                <button>Start</button>
+            </form>
+        </div>
+    </div>
     <script src="./main.js"></script>
 </body>
 </html>
