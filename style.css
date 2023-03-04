@@ -161,11 +161,11 @@ input[type=radio] {
     height: 150px;
 }
 
-.score {
+.score-container {
     font-size: 1.5rem;
 }
 
-span {
+.score-p2 {
     margin-left: 40px;
 }
 

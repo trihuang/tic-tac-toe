@@ -1,7 +1,8 @@
 const player = (name, marker) => {
   const getName = () => name;
   const getMarker = () => marker;
-  return { getName, getMarker };
+  let isComputer = false;
+  return { getName, getMarker, isComputer };
 };
 
 const gameBoard = () => {
@@ -30,6 +31,8 @@ const interfaceHandler = (() => {
   const circleImg = document.getElementById('circle-img');
   const x = document.getElementById('x');
   const xImg = document.getElementById('x-img');
+  const playerOneScore = document.querySelector('.score-p1');
+  const playerTwoScore = document.querySelector('.score-p2');
 
   function markerHandler() {
     if (circleOne.checked) {
@@ -81,11 +84,45 @@ const interfaceHandler = (() => {
                     alert('Please have each player choose different markers.');
                 } else {
                     pvpInterface.style.display = 'none';
+
+                    const pOneName = playerOneName.value;
+                    let pOneMarker;
+                    if (circleOne.checked) pOneMarker = 'O';
+                    else pOneMarker = 'X';
+                    const playerOne = player(pOneName, pOneMarker);
+
+                    const pTwoName = playerTwoName.value;
+                    let pTwoMarker;
+                    if (circleTwo.checked) pTwoMarker = 'O';
+                    else pTwoMarker = 'X';
+                    const playerTwo = player(pTwoName, pTwoMarker);
+
+                    playerOneScore.textContent = `${pOneName} (P1): 0`;
+                    playerTwoScore.textContent = `${pTwoName} (P2): 0`;
+                    
                     // Start the Game
                 }
             } else if (pvcInterface.style.display === 'block') {
                 if (name.value !== '') {
                     pvcInterface.style.display = 'none';
+
+                    const playerName = name.value;
+                    let playerMarker;
+                    let computerMarker;
+                    if (circle.checked) {
+                        playerMarker = 'O';
+                        computerMarker = 'X';
+                    } else {
+                        playerMarker = 'X';
+                        computerMarker = 'O';
+                    }
+
+                    const humanPlayer = player(playerName, playerMarker);
+                    const computer = player('Computer', computerMarker);
+
+                    playerOneScore.textContent = `${playerName}: 0`;
+                    playerTwoScore.textContent = `Computer: 0`;
+
                     // Start the Game
                 } else {
                     alert('Please type in your name.');
@@ -97,7 +134,7 @@ const interfaceHandler = (() => {
             break;
     }
   }
-  
+
   circleOne.addEventListener('click', markerHandler);
   xOne.addEventListener('click', markerHandler);
   circleTwo.addEventListener('click', markerHandler);
