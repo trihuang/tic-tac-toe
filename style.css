@@ -30,28 +30,31 @@ h1 {
 
 .welcome,
 .pvp,
-.pvc {
+.pvc,
+.restart-pvp,
+.restart-pvc {
+    position: fixed;
     background-color: var(--form);
     border: 3px solid var(--border);
     border-radius: 25px;
     height: 400px;
     width: 400px;
     box-shadow: 5px 10px 18px #888888;
+    z-index: 1;
 }
 
 .welcome {
-    position: fixed;
-    display: none;
+    display: block;
 }
 
 .pvp {
     height: 550px;
-    position: fixed;
-    display: none;
 }
 
-.pvc {
-    position: fixed;
+.pvp,
+.pvc,
+.restart-pvp,
+.restart-pvc {
     display: none;
 }
 
@@ -156,4 +159,22 @@ input[type=radio] {
 
 .cell > img {
     height: 150px;
+}
+
+.score {
+    font-size: 1.5rem;
+}
+
+span {
+    margin-left: 40px;
+}
+
+.restart-pvp p,
+.restart-pvc p {
+    margin-top: 25px;
+}
+
+.restart-pvp img,
+.restart-pvc img {
+    margin: 20px 25px;
 }
