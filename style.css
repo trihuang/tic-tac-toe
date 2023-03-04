@@ -126,7 +126,7 @@ label > img {
 }
 
 .selected {
-    background-color: var(--background);
+    background-color: var(--board);
     border-radius: 10px;
     opacity: 0.75;
 }
