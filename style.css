@@ -28,6 +28,26 @@ h1 {
     margin: 40px auto;
 }
 
+.info {
+    border: 3px solid var(--border);
+    background-color: white;
+    position: fixed;
+    font-size: 1.5rem;
+    height: 3rem;
+    width: 280px;
+    padding: 10px;
+    box-shadow: 5px 5px 18px #888888;
+    border-radius: 10px;
+    top: 40%;
+    margin-top: -1.5rem;
+    transition: opacity 1s;
+    opacity: 0;
+}
+
+.appear {
+    opacity: 1;
+}
+
 .welcome,
 .pvp,
 .pvc,
