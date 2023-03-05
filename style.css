@@ -56,8 +56,7 @@ h1 {
 .welcome,
 .pvp,
 .pvc,
-.restart-pvp,
-.restart-pvc {
+.restart {
     position: fixed;
     background-color: var(--form);
     border: 3px solid var(--border);
@@ -78,8 +77,7 @@ h1 {
 
 .pvp,
 .pvc,
-.restart-pvp,
-.restart-pvc {
+.restart {
     display: none;
 }
 
@@ -194,23 +192,19 @@ input[type=radio] {
     margin-left: 40px;
 }
 
-.restart-pvp p,
-.restart-pvc p {
+.restart p {
     margin-top: 25px;
 }
 
-.restart-pvp img,
-.restart-pvc img {
+.restart img {
     margin: 20px 25px;
 }
 
-.pvp-info,
-.pvc-info {
+.restart-info {
     color: rgb(1, 103, 1);
 }
 
-.restart-pvp button,
-.restart-pvc button {
+.restart button {
     font-size: 0.9rem;
 }
 

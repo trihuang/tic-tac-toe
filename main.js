@@ -4,8 +4,28 @@ const player = (name, marker) => {
   return { name, marker, isComputer, score };
 };
 
-const game = (playerOne, playerTwo) => {
+const computer = (name, marker) => {
+  const { score } = player(name, marker);
+  let isComputer = true;
+  return { name, marker, score };
+};
+
+const gameBoard = () => {
   const board = ['', '', '', '', '', '', '', '', ''];
+  const updateBoard = (index, marker) => {
+    board[index] = marker;
+  };
+  const getCellMarker = (index) => board[index];
+  const emptyBoard = () => {
+    for (let i = 0; i < board.length; i++) {
+      board[i] = '';
+    }
+  };
+  return { board, updateBoard, getCellMarker, emptyBoard };
+};
+
+const game = (playerOne, playerTwo) => {
+  const board = gameBoard();
   let isPlayerOnesTurn = true;
   let firsttMove = true;
   const playerOneMarker = playerOne.marker;
@@ -26,24 +46,24 @@ const game = (playerOne, playerTwo) => {
     ];
 
     return WINNING_CONDITIONS.some((condition) =>
-      condition.every((index) => board[index] === marker)
+      condition.every((index) => board.getCellMarker(index) === marker)
     );
   }
 
   function isDraw() {
-    return board.every((cell) => cell === 'O' || cell === 'X');
+    return board.board.every((cell) => cell === 'O' || cell === 'X');
   }
 
   function populateCell(e) {
     const xImg = './img/icon-x.svg';
     const circleImg = './img/icon-circle.svg';
     const index = e.target.getAttribute('data-key');
-    if (isPlayerOnesTurn && playerOneMarker === 'O' && board[index] === '') {
+    if (isPlayerOnesTurn && playerOneMarker === 'O' && board.getCellMarker(index) === '') {
       const img = document.createElement('img');
       img.src = circleImg;
       e.target.appendChild(img);
       isPlayerOnesTurn = false;
-      board[index] = 'O';
+      board.updateBoard(index, 'O');
       if (firsttMove) {
         firsttMove = false;
         const info = document.querySelector('.info');
@@ -53,14 +73,14 @@ const game = (playerOne, playerTwo) => {
       if (hasMetWinningCondition(playerOneMarker)) {
         restartGame(playerOne, playerTwo);
       } else if (isDraw()) {
-        restartDraw(playerOne, playerTwo);
+        restartDraw();
       }
-    } else if (isPlayerOnesTurn && playerOneMarker === 'X' && board[index] === '') {
+    } else if (isPlayerOnesTurn && playerOneMarker === 'X' && board.getCellMarker(index) === '') {
       const img = document.createElement('img');
       img.src = xImg;
       e.target.appendChild(img);
       isPlayerOnesTurn = false;
-      board[index] = 'X';
+      board.updateBoard(index, 'X');
       if (firsttMove) {
         firsttMove = false;
         const info = document.querySelector('.info');
@@ -70,31 +90,31 @@ const game = (playerOne, playerTwo) => {
       if (hasMetWinningCondition(playerOneMarker)) {
         restartGame(playerOne, playerTwo);
       } else if (isDraw()) {
-        restartDraw(playerOne, playerTwo);
+        restartDraw();
       }
-    } else if (playerTwoMarker === 'O' && board[index] === '') {
+    } else if (playerTwoMarker === 'O' && board.getCellMarker(index) === '') {
       const img = document.createElement('img');
       img.src = circleImg;
       e.target.appendChild(img);
       isPlayerOnesTurn = true;
-      board[index] = 'O';
+      board.updateBoard(index, 'O');
 
       if (hasMetWinningCondition(playerTwoMarker)) {
         restartGame(playerTwo, playerOne);
       } else if (isDraw()) {
-        restartDraw(playerOne, playerTwo);
+        restartDraw();
       }
-    } else if (playerTwoMarker === 'X' && board[index] === '') {
+    } else if (playerTwoMarker === 'X' && board.getCellMarker(index) === '') {
       const img = document.createElement('img');
       img.src = xImg;
       e.target.appendChild(img);
       isPlayerOnesTurn = true;
-      board[index] = 'X';
+      board.updateBoard(index, 'X');
       
       if (hasMetWinningCondition(playerTwoMarker)) {
         restartGame(playerTwo, playerOne);
       } else if (isDraw()) {
-        restartDraw(playerOne, playerTwo);
+        restartDraw();
       }
     }
   }
@@ -108,10 +128,8 @@ const game = (playerOne, playerTwo) => {
   }
 
   function restartGame(winner, loser) {
-    const restartPVP = document.querySelector('.restart-pvp');
-    const restartPVC = document.querySelector('.restart-pvc');
-    const PVPInfo = document.querySelector('.pvp-info');
-    const PVCInfo = document.querySelector('.pvc-info');
+    const restartInterface = document.querySelector('.restart');
+    const restartInfo = document.querySelector('.restart-info');
 
     disableAllCells();
 
@@ -123,41 +141,33 @@ const game = (playerOne, playerTwo) => {
 
       if (loser.isComputer) {
         playerOneScore.textContent = `${name}: ${winner.score}`;
-        PVCInfo.textContent = `${name} is the winner!`;
-        restartPVC.style.display = 'block';
+        restartInfo.textContent = `${name} is the winner!`;
+        restartInterface.style.display = 'block';
       } else if (winner.isComputer) {
         playerTwoScore.textContent = `${name}: ${winner.score}`;
-        PVCInfo.textContent = `${name} is the winner!`;
-        restartPVC.style.display = 'block';
+        restartInfo.textContent = `${name} is the winner!`;
+        restartInterface.style.display = 'block';
       } else {
         if (playerOneScore.textContent.includes(name)) {
           playerOneScore.textContent = `${name} (P1): ${winner.score}`;
-          PVPInfo.textContent = `${name} is the winner!`;
+          restartInfo.textContent = `${name} is the winner!`;
         } else {
           playerTwoScore.textContent = `${name} (P2): ${winner.score}`;
-          PVPInfo.textContent = `${name} is the winner!`;
+          restartInfo.textContent = `${name} is the winner!`;
         }
-        restartPVP.style.display = 'block';
+        restartInterface.style.display = 'block';
       }
     }
   }
 
-  function restartDraw(playerOne, playerTwo) {
-    const restartPVP = document.querySelector('.restart-pvp');
-    const restartPVC = document.querySelector('.restart-pvc');
-    const PVPInfo = document.querySelector('.pvp-info');
-    const PVCInfo = document.querySelector('.pvc-info');
+  function restartDraw() {
+    const restartInterface = document.querySelector('.restart');
+    const restartInfo = document.querySelector('.restart-info');
     const text = "It's a draw!";
 
     disableAllCells();
-
-    if (playerOne.isComputer || playerTwo.isComputer) {
-      PVCInfo.textContent = text;
-      restartPVC.style.display = 'block';
-    } else {
-      PVPInfo.textContent = text;
-      restartPVP.style.display = 'block';
-    }
+    restartInfo.textContent = text;
+    restartInterface.style.display = 'block';
   }
 
   function restart(e) {
@@ -166,10 +176,8 @@ const game = (playerOne, playerTwo) => {
     }
     emptyCells();
     enableAllCells();
-    const restartPVP = document.querySelector('.restart-pvp');
-    const restartPVC = document.querySelector('.restart-pvc');
-    restartPVP.style.display = 'none';
-    restartPVC.style.display = 'none';
+    const restartInterface = document.querySelector('.restart');
+    restartInterface.style.display = 'none';
 
     isPlayerOnesTurn = true;
     firsttMove = true;
@@ -182,9 +190,7 @@ const game = (playerOne, playerTwo) => {
         cell.removeChild(img);
       }
     });
-    for (let i = 0; i < board.length; i++) {
-      board[i] = '';
-    }
+    board.emptyBoard();
   }
 
   restartIcons.forEach((icon) => icon.addEventListener('click', restart));
@@ -196,8 +202,7 @@ const interfaceHandler = (() => {
   const welcomeInterface = document.querySelector('.welcome');
   const pvpInterface = document.querySelector('.pvp');
   const pvcInterface = document.querySelector('.pvc');
-  const restartPVP = document.querySelector('.restart-pvp');
-  const restartPVC = document.querySelector('.restart-pvc');
+  const restartInterface = document.querySelector('.restart');
   const playerOneName = document.getElementById('player1');
   const playerTwoName = document.getElementById('player2');
   const name = document.getElementById('name');
@@ -216,7 +221,7 @@ const interfaceHandler = (() => {
   const playerOneScore = document.querySelector('.score-p1');
   const playerTwoScore = document.querySelector('.score-p2');
   const info = document.querySelector('.info');
-  const closeIcons = document.querySelectorAll('.close-icon');
+  const closeIcon = document.querySelector('.close-icon');
   const restartSideIcon = document.querySelector('.side-icon');
 
   function markerHandler() {
@@ -249,12 +254,10 @@ const interfaceHandler = (() => {
     switch (text) {
       case 'Play against a human':
         welcomeInterface.style.display = 'none';
-        restartPVC.style.display = 'none';
         pvpInterface.style.display = 'block';
         break;
       case 'Play against the computer':
         welcomeInterface.style.display = 'none';
-        restartPVP.style.display = 'none';
         pvcInterface.style.display = 'block';
         break;
       case 'New game against a different opponent':
@@ -307,11 +310,11 @@ const interfaceHandler = (() => {
             }
 
             const humanPlayer = player(playerName, playerMarker);
-            const computer = player('Computer', computerMarker);
+            const computer = player('The computer', computerMarker);
             computer.isComputer = true;
 
             playerOneScore.textContent = `${playerName}: 0`;
-            playerTwoScore.textContent = `Computer: 0`;
+            playerTwoScore.textContent = `The computer: 0`;
 
             game(humanPlayer, computer);
             resetInput();
@@ -327,13 +330,8 @@ const interfaceHandler = (() => {
   }
 
   function closeWindow() {
-    if (restartPVP.style.display === 'block') {
-      restartPVP.style.display = 'none';
-      restartSideIcon.style.display = 'block';
-    } else {
-      restartPVC.style.display = 'none';
-      restartSideIcon.style.display = 'block';
-    }
+    restartInterface.style.display = 'none';
+    restartSideIcon.style.display = 'block';
   }
 
   function resetInput() {
@@ -352,6 +350,6 @@ const interfaceHandler = (() => {
   xTwo.addEventListener('click', markerHandler);
   circle.addEventListener('click', markerHandler);
   x.addEventListener('click', markerHandler);
-  closeIcons.forEach((icon) => icon.addEventListener('click', closeWindow));
+  closeIcon.addEventListener('click', closeWindow);
   buttons.forEach((button) => button.addEventListener('click', buttonHandler));
 })();
