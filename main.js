@@ -7,9 +7,31 @@ const player = (name, marker) => {
 const game = (playerOne, playerTwo) => {
   const board = ['', '', '', '', '', '', '', '', ''];
   let isPlayerOnesTurn = true;
+  let firsttMove = true;
   const playerOneMarker = playerOne.marker;
   const playerTwoMarker = playerTwo.marker;
   const cells = document.querySelectorAll('.cell');
+
+  function hasMetWinningCondition(marker) {
+    const WINNING_CONDITIONS = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+
+    return WINNING_CONDITIONS.some((condition) =>
+      condition.every((index) => board[index] === marker)
+    );
+  }
+
+  function isDraw() {
+    return board.every((cell) => cell === 'O' || cell === 'X');
+  }
 
   function populateCell(e) {
     const xImg = './img/icon-x.svg';
@@ -21,26 +43,116 @@ const game = (playerOne, playerTwo) => {
       e.target.appendChild(img);
       isPlayerOnesTurn = false;
       board[index] = 'O';
+      if (firsttMove) {
+        firsttMove = false;
+        const info = document.querySelector('.info');
+        info.classList.add('disappear');
+      }
+
+      if (hasMetWinningCondition(playerOneMarker)) {
+        restartGame(playerOne, playerTwo);
+      } else if (isDraw()) {
+        restartDraw(playerOne, playerTwo);
+      }
     } else if (isPlayerOnesTurn && playerOneMarker === 'X' && board[index] === '') {
       const img = document.createElement('img');
       img.src = xImg;
       e.target.appendChild(img);
       isPlayerOnesTurn = false;
       board[index] = 'X';
+      if (firsttMove) {
+        firsttMove = false;
+        const info = document.querySelector('.info');
+        info.classList.add('disappear');
+      }
+
+      if (hasMetWinningCondition(playerOneMarker)) {
+        restartGame(playerOne, playerTwo);
+      } else if (isDraw()) {
+        restartDraw(playerOne, playerTwo);
+      }
     } else if (playerTwoMarker === 'O' && board[index] === '') {
       const img = document.createElement('img');
       img.src = circleImg;
       e.target.appendChild(img);
       isPlayerOnesTurn = true;
       board[index] = 'O';
+
+      if (hasMetWinningCondition(playerTwoMarker)) {
+        restartGame(playerTwo, playerOne);
+      } else if (isDraw()) {
+        restartDraw(playerOne, playerTwo);
+      }
     } else if (playerTwoMarker === 'X' && board[index] === '') {
       const img = document.createElement('img');
       img.src = xImg;
       e.target.appendChild(img);
       isPlayerOnesTurn = true;
       board[index] = 'X';
+      
+      if (hasMetWinningCondition(playerTwoMarker)) {
+        restartGame(playerTwo, playerOne);
+      } else if (isDraw()) {
+        restartDraw(playerOne, playerTwo);
+      }
     }
-    console.log(board);
+  }
+
+  function disableAllCells() {
+    cells.forEach((cell) => cell.removeEventListener('click', populateCell))
+  }
+
+  function restartGame(winner, loser) {
+    const restartPVP = document.querySelector('.restart-pvp');
+    const restartPVC = document.querySelector('.restart-pvc');
+    const PVPInfo = document.querySelector('.pvp-info');
+    const PVCInfo = document.querySelector('.pvc-info');
+
+    disableAllCells();
+
+    if (winner !== undefined) {
+      const playerOneScore = document.querySelector('.score-p1');
+      const playerTwoScore = document.querySelector('.score-p2');
+      const name = winner.name;
+      winner.score++;
+
+      if (loser.isComputer) {
+        playerOneScore.textContent = `${name}: ${winner.score}`;
+        PVCInfo.textContent = `${name} is the winner!`;
+        restartPVC.style.display = 'block';
+      } else if (winner.isComputer) {
+        playerTwoScore.textContent = `${name}: ${winner.score}`;
+        PVCInfo.textContent = `${name} is the winner!`;
+        restartPVC.style.display = 'block';
+      } else {
+        if (playerOneScore.textContent.includes(name)) {
+          playerOneScore.textContent = `${name} (P1): ${winner.score}`;
+          PVPInfo.textContent = `${name} is the winner!`;
+        } else {
+          playerTwoScore.textContent = `${name} (P2): ${winner.score}`;
+          PVPInfo.textContent = `${name} is the winner!`;
+        }
+        restartPVP.style.display = 'block';
+      }
+    }
+  }
+
+  function restartDraw(playerOne, playerTwo) {
+    const pvpInterface = document.querySelector('.pvp');
+    const pvcInterface = document.querySelector('.pvc');
+    const PVPInfo = document.querySelector('.pvp-info');
+    const PVCInfo = document.querySelector('.pvc-info');
+    const text = "It's a draw!";
+
+    disableAllCells();
+
+    if (playerOne.isComputer || playerTwo.isComputer) {
+      PVCInfo.textContent = text;
+      pvcInterface.style.display = 'block';
+    } else {
+      PVPInfo.textContent = text;
+      pvpInterface.style.display = 'block';
+    }
   }
 
   cells.forEach((cell) => cell.addEventListener('click', populateCell));

@@ -46,6 +46,11 @@ h1 {
 
 .appear {
     opacity: 1;
+    transition: opacity 2s;
+}
+
+.disappear {
+    opacity: 0;
 }
 
 .welcome,
