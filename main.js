@@ -6,8 +6,66 @@ const player = (name, marker) => {
 
 const computer = (name, marker) => {
   const { score } = player(name, marker);
-  let isComputer = true;
-  return { name, marker, score };
+  const isComputer = true;
+
+  const minimax = (board, playerMarker) => {
+    const availableSpots = board.emptyIndices();
+
+    let humanMarker;
+    if (marker === 'X') {
+      humanMarker = 'O';
+    } else {
+      humanMarker = 'X';
+    }
+
+    if (board.hasMetWinningCondition(humanMarker)) {
+      return { score: -10 };
+    } else if (board.hasMetWinningCondition(marker)) {
+      return { score: 10 };
+    } else if (availableSpots.length === 0) {
+      return { score: 0 };
+    }
+
+    const moves = [];
+    for (let i = 0; i < availableSpots.length; i++) {
+      let move = {};
+      move.index = availableSpots[i];
+      board.updateBoard(availableSpots[i], playerMarker);
+
+      if (playerMarker === marker) {
+        let result = minimax(board, humanMarker);
+        move.score = result.score;
+      } else {
+        let result = minimax(board, marker);
+        move.score = result.score;
+      }
+
+      board.updateBoard(availableSpots[i], '');
+      moves.push(move);
+    }
+
+    let bestMove;
+    if (player === marker) {
+      let bestScore = -10000;
+      for (let i = 0; i < moves.length; i++) {
+        if (moves[i].score > bestScore) {
+          bestScore = moves[i].score;
+          bestMove = i;
+        }
+      }
+    } else {
+        let bestScore = 10000;
+        for (let i = 0; i < moves.length; i++) {
+          if (moves[i].score < bestScore) {
+            bestScore = moves[i].score;
+            bestMove = i;
+          }
+        }
+    }
+    return moves[bestMove];
+  };
+
+  return { name, marker, score, isComputer, minimax };
 };
 
 const gameBoard = () => {
@@ -15,23 +73,24 @@ const gameBoard = () => {
   const updateBoard = (index, marker) => {
     board[index] = marker;
   };
+
   const getCellMarker = (index) => board[index];
+
   const emptyBoard = () => {
     for (let i = 0; i < board.length; i++) {
       board[i] = '';
     }
   };
-  return { board, updateBoard, getCellMarker, emptyBoard };
-};
 
-const game = (playerOne, playerTwo) => {
-  const board = gameBoard();
-  let isPlayerOnesTurn = true;
-  let firsttMove = true;
-  const playerOneMarker = playerOne.marker;
-  const playerTwoMarker = playerTwo.marker;
-  const cells = document.querySelectorAll('.cell');
-  const restartIcons = document.querySelectorAll('.restart-icon');
+  const emptyIndices = () => {
+    const empty = [];
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === '') {
+        empty.push(i);
+      }
+    }
+    return empty;
+  };
 
   function hasMetWinningCondition(marker) {
     const WINNING_CONDITIONS = [
@@ -46,9 +105,28 @@ const game = (playerOne, playerTwo) => {
     ];
 
     return WINNING_CONDITIONS.some((condition) =>
-      condition.every((index) => board.getCellMarker(index) === marker)
+      condition.every((index) => board[index] === marker)
     );
   }
+
+  return {
+    board,
+    updateBoard,
+    getCellMarker,
+    emptyBoard,
+    emptyIndices,
+    hasMetWinningCondition
+  };
+};
+
+const game = (playerOne, playerTwo) => {
+  const board = gameBoard();
+  let isPlayerOnesTurn = true;
+  let firsttMove = true;
+  const playerOneMarker = playerOne.marker;
+  const playerTwoMarker = playerTwo.marker;
+  const cells = document.querySelectorAll('.cell');
+  const restartIcons = document.querySelectorAll('.restart-icon');
 
   function isDraw() {
     return board.board.every((cell) => cell === 'O' || cell === 'X');
@@ -70,10 +148,20 @@ const game = (playerOne, playerTwo) => {
         info.classList.add('disappear');
       }
 
-      if (hasMetWinningCondition(playerOneMarker)) {
+      if (board.hasMetWinningCondition(playerOneMarker)) {
         restartGame(playerOne, playerTwo);
       } else if (isDraw()) {
         restartDraw();
+      }
+
+      if (playerTwo.isComputer) {
+        const computerMove = playerTwo.minimax(board, playerTwoMarker);
+        const cell = document.querySelector(`div[data-key="${computerMove.index}"]`);
+        setTimeout(() => {
+          if (cell !== null) {
+            cell.click();
+          }
+        }, 300);
       }
     } else if (isPlayerOnesTurn && playerOneMarker === 'X' && board.getCellMarker(index) === '') {
       const img = document.createElement('img');
@@ -87,10 +175,20 @@ const game = (playerOne, playerTwo) => {
         info.classList.add('disappear');
       }
 
-      if (hasMetWinningCondition(playerOneMarker)) {
+      if (board.hasMetWinningCondition(playerOneMarker)) {
         restartGame(playerOne, playerTwo);
       } else if (isDraw()) {
         restartDraw();
+      }
+
+      if (playerTwo.isComputer) {
+        const computerMove = playerTwo.minimax(board, playerTwoMarker);
+        const cell = document.querySelector(`div[data-key="${computerMove.index}"]`);
+        setTimeout(() => {
+          if (cell !== null) {
+            cell.click();
+          }
+        }, 300);
       }
     } else if (playerTwoMarker === 'O' && board.getCellMarker(index) === '') {
       const img = document.createElement('img');
@@ -99,7 +197,7 @@ const game = (playerOne, playerTwo) => {
       isPlayerOnesTurn = true;
       board.updateBoard(index, 'O');
 
-      if (hasMetWinningCondition(playerTwoMarker)) {
+      if (board.hasMetWinningCondition(playerTwoMarker)) {
         restartGame(playerTwo, playerOne);
       } else if (isDraw()) {
         restartDraw();
@@ -111,7 +209,7 @@ const game = (playerOne, playerTwo) => {
       isPlayerOnesTurn = true;
       board.updateBoard(index, 'X');
       
-      if (hasMetWinningCondition(playerTwoMarker)) {
+      if (board.hasMetWinningCondition(playerTwoMarker)) {
         restartGame(playerTwo, playerOne);
       } else if (isDraw()) {
         restartDraw();
@@ -120,7 +218,7 @@ const game = (playerOne, playerTwo) => {
   }
 
   function disableAllCells() {
-    cells.forEach((cell) => cell.removeEventListener('click', populateCell))
+    cells.forEach((cell) => cell.removeEventListener('click', populateCell));
   }
 
   function enableAllCells() {
@@ -310,13 +408,12 @@ const interfaceHandler = (() => {
             }
 
             const humanPlayer = player(playerName, playerMarker);
-            const computer = player('The computer', computerMarker);
-            computer.isComputer = true;
+            const ai = computer('The computer', computerMarker);
 
             playerOneScore.textContent = `${playerName}: 0`;
             playerTwoScore.textContent = `The computer: 0`;
 
-            game(humanPlayer, computer);
+            game(humanPlayer, ai);
             resetInput();
           } else {
             alert('Please type in your name.');
