@@ -203,3 +203,22 @@ input[type=radio] {
 .restart-pvc img {
     margin: 20px 25px;
 }
+
+.pvp-info,
+.pvc-info {
+    color: rgb(1, 103, 1);
+}
+
+.side-icon {
+    position: fixed;
+    left: 10%;
+    top: 50%;
+    height: 80px;
+    cursor: pointer;
+    display: none;
+}
+
+.close-icon, 
+.restart-icon {
+    cursor: pointer;
+}

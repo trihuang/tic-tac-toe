@@ -11,6 +11,7 @@ const game = (playerOne, playerTwo) => {
   const playerOneMarker = playerOne.marker;
   const playerTwoMarker = playerTwo.marker;
   const cells = document.querySelectorAll('.cell');
+  const restartIcons = document.querySelectorAll('.restart-icon');
 
   function hasMetWinningCondition(marker) {
     const WINNING_CONDITIONS = [
@@ -102,6 +103,10 @@ const game = (playerOne, playerTwo) => {
     cells.forEach((cell) => cell.removeEventListener('click', populateCell))
   }
 
+  function enableAllCells() {
+    cells.forEach((cell) => cell.addEventListener('click', populateCell));
+  }
+
   function restartGame(winner, loser) {
     const restartPVP = document.querySelector('.restart-pvp');
     const restartPVC = document.querySelector('.restart-pvc');
@@ -155,7 +160,36 @@ const game = (playerOne, playerTwo) => {
     }
   }
 
+  function restart(e) {
+    if (e.target.classList.contains('side-icon')) {
+      e.target.style.display = 'none';
+    }
+    emptyCells();
+    enableAllCells();
+    const restartPVP = document.querySelector('.restart-pvp');
+    const restartPVC = document.querySelector('.restart-pvc');
+    restartPVP.style.display = 'none';
+    restartPVC.style.display = 'none';
+
+    isPlayerOnesTurn = true;
+    firsttMove = true;
+  }
+
+  function emptyCells() {
+    cells.forEach((cell) => {
+      if (cell.hasChildNodes()) {
+        const img = document.querySelector('.cell > img');
+        cell.removeChild(img);
+      }
+    });
+    for (let i = 0; i < board.length; i++) {
+      board[i] = '';
+    }
+  }
+
+  restartIcons.forEach((icon) => icon.addEventListener('click', restart));
   cells.forEach((cell) => cell.addEventListener('click', populateCell));
+  return { emptyCells };
 };
 
 const interfaceHandler = (() => {
@@ -183,6 +217,8 @@ const interfaceHandler = (() => {
   const playerOneScore = document.querySelector('.score-p1');
   const playerTwoScore = document.querySelector('.score-p2');
   const info = document.querySelector('.info');
+  const closeIcons = document.querySelectorAll('.close-icon');
+  const restartSideIcon = document.querySelector('.side-icon');
 
   function markerHandler() {
     if (circleOne.checked) {
@@ -252,7 +288,9 @@ const interfaceHandler = (() => {
             playerOneScore.textContent = `${pOneName} (P1): 0`;
             playerTwoScore.textContent = `${pTwoName} (P2): 0`;
 
-            game(playerOne, playerTwo);
+            const newGame = game(playerOne, playerTwo);
+            newGame.emptyCells();
+            resetInput();
           }
         } else if (pvcInterface.style.display === 'block') {
           if (name.value !== '') {
@@ -278,7 +316,9 @@ const interfaceHandler = (() => {
             playerOneScore.textContent = `${playerName}: 0`;
             playerTwoScore.textContent = `Computer: 0`;
 
-            game(humanPlayer, computer);
+            const newGame = game(humanPlayer, computer);
+            newGame.emptyCells();
+            resetInput();
           } else {
             alert('Please type in your name.');
           }
@@ -290,11 +330,32 @@ const interfaceHandler = (() => {
     }
   }
 
+  function closeWindow() {
+    if (restartPVP.style.display === 'block') {
+      restartPVP.style.display = 'none';
+      restartSideIcon.style.display = 'block';
+    } else {
+      restartPVC.style.display = 'none';
+      restartSideIcon.style.display = 'block';
+    }
+  }
+
+  function resetInput() {
+    playerOneName.value = '';
+    playerTwoName.value = '';
+    circleOne.checked = true;
+    xTwo.checked = true;
+    name.value = '';
+    circle.checked = true;
+    markerHandler();
+  }
+
   circleOne.addEventListener('click', markerHandler);
   xOne.addEventListener('click', markerHandler);
   circleTwo.addEventListener('click', markerHandler);
   xTwo.addEventListener('click', markerHandler);
   circle.addEventListener('click', markerHandler);
   x.addEventListener('click', markerHandler);
+  closeIcons.forEach((icon) => icon.addEventListener('click', closeWindow));
   buttons.forEach((button) => button.addEventListener('click', buttonHandler));
 })();
