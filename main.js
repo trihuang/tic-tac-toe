@@ -143,8 +143,8 @@ const game = (playerOne, playerTwo) => {
   }
 
   function restartDraw(playerOne, playerTwo) {
-    const pvpInterface = document.querySelector('.pvp');
-    const pvcInterface = document.querySelector('.pvc');
+    const restartPVP = document.querySelector('.restart-pvp');
+    const restartPVC = document.querySelector('.restart-pvc');
     const PVPInfo = document.querySelector('.pvp-info');
     const PVCInfo = document.querySelector('.pvc-info');
     const text = "It's a draw!";
@@ -153,10 +153,10 @@ const game = (playerOne, playerTwo) => {
 
     if (playerOne.isComputer || playerTwo.isComputer) {
       PVCInfo.textContent = text;
-      pvcInterface.style.display = 'block';
+      restartPVC.style.display = 'block';
     } else {
       PVPInfo.textContent = text;
-      pvpInterface.style.display = 'block';
+      restartPVP.style.display = 'block';
     }
   }
 
@@ -189,7 +189,6 @@ const game = (playerOne, playerTwo) => {
 
   restartIcons.forEach((icon) => icon.addEventListener('click', restart));
   cells.forEach((cell) => cell.addEventListener('click', populateCell));
-  return { emptyCells };
 };
 
 const interfaceHandler = (() => {
@@ -258,9 +257,8 @@ const interfaceHandler = (() => {
         restartPVP.style.display = 'none';
         pvcInterface.style.display = 'block';
         break;
-      case 'Play against a different player':
-        restartPVP.style.display = 'none';
-        pvpInterface.style.display = 'block';
+      case 'New game against a different opponent':
+        location.reload();
         break;
       case 'Start':
         if (pvpInterface.style.display === 'block') {
@@ -288,8 +286,7 @@ const interfaceHandler = (() => {
             playerOneScore.textContent = `${pOneName} (P1): 0`;
             playerTwoScore.textContent = `${pTwoName} (P2): 0`;
 
-            const newGame = game(playerOne, playerTwo);
-            newGame.emptyCells();
+            game(playerOne, playerTwo);
             resetInput();
           }
         } else if (pvcInterface.style.display === 'block') {
@@ -316,8 +313,7 @@ const interfaceHandler = (() => {
             playerOneScore.textContent = `${playerName}: 0`;
             playerTwoScore.textContent = `Computer: 0`;
 
-            const newGame = game(humanPlayer, computer);
-            newGame.emptyCells();
+            game(humanPlayer, computer);
             resetInput();
           } else {
             alert('Please type in your name.');

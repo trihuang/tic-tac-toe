@@ -209,16 +209,21 @@ input[type=radio] {
     color: rgb(1, 103, 1);
 }
 
-.side-icon {
-    position: fixed;
-    left: 10%;
-    top: 50%;
-    height: 80px;
-    cursor: pointer;
-    display: none;
+.restart-pvp button,
+.restart-pvc button {
+    font-size: 0.9rem;
 }
 
 .close-icon, 
 .restart-icon {
     cursor: pointer;
+    height: 80px;
+}
+
+.side-icon {
+    position: fixed;
+    left: 10%;
+    top: 50%;
+    cursor: pointer;
+    display: none;
 }
